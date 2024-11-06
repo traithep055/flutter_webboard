@@ -5,6 +5,8 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   var isAuthenticated = false.obs;
+  var isLoggedIn = false.obs;  // Track login status
+  var userRole = ''.obs;
 
   final String registerUrl = 'http://192.168.11.221:3001/api/register';
   final String loginUrl = 'http://192.168.11.221:3001/api/login';
@@ -45,10 +47,14 @@ class AuthController extends GetxController {
       String accessToken = data['accessToken'];
       String refreshToken = data['refreshToken'];
 
-      // Store tokens in SharedPreferences
+      // เก็บ role, accessToken และ refreshToken ลงใน SharedPreferences
       SharedPreferences prefs = await SharedPreferences.getInstance();
       await prefs.setString('accessToken', accessToken);
       await prefs.setString('refreshToken', refreshToken);
+
+      // อัพเดทค่า userRole และ isLoggedIn
+      userRole.value = role;
+      isLoggedIn.value = true; // เพิ่มบรรทัดนี้
 
       // Navigate based on role
       if (role == 'ADMIN') {
@@ -66,14 +72,17 @@ class AuthController extends GetxController {
   }
 
   Future<void> logout() async {
-    // Clear tokens from SharedPreferences
+    // ลบ tokens จาก SharedPreferences
     SharedPreferences prefs = await SharedPreferences.getInstance();
     await prefs.remove('accessToken');
     await prefs.remove('refreshToken');
 
-    // Update isAuthenticated and navigate to login page
+    // อัปเดต isAuthenticated และ isLoggedIn
     isAuthenticated.value = false;
-    Get.offAllNamed('/home'); // Replace with your login route
+    isLoggedIn.value = false; // Set to false when logout
+    userRole.value = ''; // Clear user role
+
+    Get.offAllNamed('/home'); // หน้า login
 
     Get.snackbar('Logged out', 'คุณได้ออกจากระบบเรียบร้อย');
   }

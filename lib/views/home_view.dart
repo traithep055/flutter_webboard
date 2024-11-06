@@ -29,6 +29,13 @@ class HomeView extends StatelessWidget {
                         Get.toNamed('/admindashboard');  // Go to admin dashboard
                       },
                     ),
+                    if (authController.userRole.value == 'USER') 
+                    IconButton(
+                      icon: const Icon(Icons.person),
+                      onPressed: () {
+                        Get.toNamed('/userdashboard');  // Go to user dashboard
+                      },
+                    ),
                   // Show the "Logout" button if the user is logged in
                   IconButton(
                     icon: const Icon(Icons.logout),

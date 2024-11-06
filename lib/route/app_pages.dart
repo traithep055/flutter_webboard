@@ -2,7 +2,9 @@ import 'package:get/get.dart';
 import '../controllers/category_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart'; // Import the AuthController
+import '../views/admin/category/addcategory_page.dart';
 import '../views/admin/category/category_page.dart';
+import '../views/admin/category/editcategory_page.dart';
 import '../views/admin/dashboard.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
@@ -38,6 +40,20 @@ class AppPages {
     GetPage(
       name: '/category',
       page: () => CategoryPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => CategoryController());
+      }),
+    ),
+    GetPage(
+      name: '/addcategory',
+      page: () => AddCategoryPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => CategoryController());
+      }),
+    ),
+    GetPage(
+      name: '/editcategory',
+      page: () => EditCategoryPage(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => CategoryController());
       }),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.find<HomeController>();
+  final AuthController authController = Get.find<AuthController>();  // ใช้ AuthController
   final int contentLimit = 200; // Maximum content length to display
 
   @override
@@ -14,34 +16,55 @@ class HomeView extends StatelessWidget {
         title: const Text('หน้าแรก'),
         backgroundColor: const Color.fromARGB(255, 217, 217, 217),
         actions: [
-          TextButton(
-            onPressed: () {
-              Get.toNamed('/login');
-            },
-            child: const Text(
-              'sign in',
-              style: TextStyle(color: Colors.blue),
-            ),
-          ),
+          // If the user is not logged in, show the "Sign In" button
+          Obx(() {
+            if (authController.isLoggedIn.value) {
+              return Row(
+                children: [
+                  // Show the user icon if the user is logged in
+                  if (authController.userRole.value == 'ADMIN') 
+                    IconButton(
+                      icon: const Icon(Icons.person),
+                      onPressed: () {
+                        Get.toNamed('/admindashboard');  // Go to admin dashboard
+                      },
+                    ),
+                  // Show the "Logout" button if the user is logged in
+                  IconButton(
+                    icon: const Icon(Icons.logout),
+                    onPressed: () {
+                      authController.logout(); // Log out the user
+                    },
+                  ),
+                ],
+              );
+            } else {
+              // Show the "Sign In" button if the user is not logged in
+              return TextButton(
+                onPressed: () {
+                  Get.toNamed('/login');
+                },
+                child: const Text(
+                  'Sign In',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              );
+            }
+          }),
         ],
       ),
       body: Column(
         children: [
           Container(
-            // color: const Color(0xFF6332C6),
             padding: const EdgeInsets.all(10),
             alignment: Alignment.centerRight,
             child: DropdownButton<String>(
               items: const [
-                DropdownMenuItem(value: "หมวดหมู่", child: Text("เลือกหมวดหมู่",
-                style: TextStyle(color: Colors.black,),
-                ),),
+                DropdownMenuItem(value: "หมวดหมู่", child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black))),
                 // Add more categories here
               ],
               onChanged: (value) {},
-              hint: const Text("เลือกหมวดหมู่",
-              style: TextStyle(color: Colors.white),
-              ),
+              hint: const Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.white)),
             ),
           ),
           Expanded(
@@ -60,6 +83,7 @@ class HomeView extends StatelessWidget {
     );
   }
 }
+
 
 class ExpandablePostCard extends StatefulWidget {
   final dynamic post;
@@ -140,56 +164,55 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
   }
 
   @override
-Widget build(BuildContext context) {
-  final post = widget.post;
-  final isContentLong = post.content.length > widget.contentLimit;
+  Widget build(BuildContext context) {
+    final post = widget.post;
+    final isContentLong = post.content.length > widget.contentLimit;
 
-  return Card(
-    margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-    child: Padding(
-      padding: const EdgeInsets.all(10),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('ชื่อกระทู้: ${post.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
-          Text('ผู้เขียน: ${post.author} โพสต์เมื่อ: ${post.date}'),
-          const SizedBox(height: 5),
-          Text(
-            _isExpanded
-                ? post.content
-                : (isContentLong ? post.content.substring(0, widget.contentLimit) + '...' : post.content),
-          ),
-          if (post.imageUrl.isNotEmpty)
-            Padding(
-              padding: const EdgeInsets.only(top: 8.0),
-              child: Center( // Center the image
-                child: Image.network(post.imageUrl),
-              ),
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+      child: Padding(
+        padding: const EdgeInsets.all(10),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('ชื่อกระทู้: ${post.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
+            Text('ผู้เขียน: ${post.author} โพสต์เมื่อ: ${post.date}'),
+            const SizedBox(height: 5),
+            Text(
+              _isExpanded
+                  ? post.content
+                  : (isContentLong ? post.content.substring(0, widget.contentLimit) + '...' : post.content),
             ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              if (isContentLong)
-                TextButton(
-                  onPressed: () {
-                    setState(() {
-                      _isExpanded = !_isExpanded;
-                    });
-                  },
-                  child: Text(_isExpanded ? 'อ่านน้อยลง' : 'อ่านเพิ่มเติม'),
+            if (post.imageUrl.isNotEmpty)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Center( // Center the image
+                  child: Image.network(post.imageUrl),
                 ),
-              IconButton(
-                icon: const Icon(Icons.chat_bubble_outline),
-                onPressed: () {
-                  _showCommentsDialog(context);
-                },
               ),
-            ],
-          ),
-        ],
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                if (isContentLong)
+                  TextButton(
+                    onPressed: () {
+                      setState(() {
+                        _isExpanded = !_isExpanded;
+                      });
+                    },
+                    child: Text(_isExpanded ? 'อ่านน้อยลง' : 'อ่านเพิ่มเติม'),
+                  ),
+                IconButton(
+                  icon: const Icon(Icons.chat_bubble_outline),
+                  onPressed: () {
+                    _showCommentsDialog(context);
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }

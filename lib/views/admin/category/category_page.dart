@@ -10,7 +10,10 @@ class CategoryPage extends StatelessWidget {
     return Scaffold(
       backgroundColor: const Color(0xFF6332C6),
       appBar: AppBar(
-        title: const Text('จัดการหมวดหมู่'),
+        title: const Text(
+          'จัดการหมวดหมู่',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Navigator.pop(context),
@@ -27,8 +30,7 @@ class CategoryPage extends StatelessWidget {
                 children: [
                   ElevatedButton.icon(
                     onPressed: () {
-                      // Add new category logic here
-                      controller.addCategory("หมวดหมู่ใหม่");
+                      Get.toNamed('/addcategory');
                     },
                     icon: const Icon(
                       Icons.add,
@@ -36,7 +38,7 @@ class CategoryPage extends StatelessWidget {
                     ),
                     label: const Text(
                       'เพิ่มหมวดหมู่',
-                      style: TextStyle(color: Colors.white),
+                      style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
                     ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green, // Use backgroundColor instead of primary
@@ -54,22 +56,28 @@ class CategoryPage extends StatelessWidget {
                     return Card(
                       color: Colors.white,
                       child: ListTile(
-                        title: Text('ชื่อหมวดหมู่: ${category.name}'),
+                        title: Text(
+                          'ชื่อหมวดหมู่: ${category.name}',
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                         trailing: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             IconButton(
                               icon: const Icon(Icons.edit, color: Colors.yellow),
                               onPressed: () {
-                                // Edit category logic here
-                                controller.editCategory(index, "หมวดหมู่แก้ไข");
+                                // ส่ง 'categoryId' และ 'categoryName' ไปยังหน้า 'EditCategoryPage'
+                                Get.toNamed('/editcategory', parameters: {
+                                  'categoryId': category.id, // ส่ง categoryId
+                                  'categoryName': category.name, // ส่ง categoryName
+                                });
                               },
                             ),
                             IconButton(
                               icon: const Icon(Icons.delete, color: Colors.red),
                               onPressed: () {
-                                // Delete category logic here
-                                controller.deleteCategory(index);
+                                // Call deleteCategory with the category id
+                                controller.deleteCategory(category.id);
                               },
                             ),
                           ],

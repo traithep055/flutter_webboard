@@ -38,6 +38,7 @@ class AdminDashboardView extends StatelessWidget {
                 label: 'ข้อมูลส่วนตัว',
                 onTap: () {
                   // Navigate to personal information
+                  Get.toNamed('/adminprofile');
                 },
               ),
               DashboardButton(

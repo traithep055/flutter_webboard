@@ -3,10 +3,12 @@ import '../controllers/category_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart'; // Import the AuthController
 import '../controllers/topic_controller.dart';
+import '../models/profile_controller.dart';
 import '../views/admin/category/addcategory_page.dart';
 import '../views/admin/category/category_page.dart';
 import '../views/admin/category/editcategory_page.dart';
 import '../views/admin/dashboard.dart';
+import '../views/admin/profile.dart';
 import '../views/auth/login_view.dart';
 import '../views/auth/register_view.dart';
 import '../views/home_view.dart';
@@ -47,6 +49,13 @@ class AppPages {
       page: () => CategoryPage(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => CategoryController());
+      }),
+    ),
+    GetPage(
+      name: '/adminprofile',
+      page: () => ProfilePage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => ProfileController());
       }),
     ),
     GetPage(

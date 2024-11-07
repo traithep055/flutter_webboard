@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 import '../controllers/category_controller.dart';
+import '../controllers/comment_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart'; // Import the AuthController
 import '../controllers/topic_controller.dart';
@@ -24,6 +25,7 @@ class AppPages {
       page: () => HomeView(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => HomeController()); // Use Get.lazyPut to create HomeController only when accessing HomeView
+        Get.lazyPut(() => CommentController());
       }),
     ),
     GetPage(

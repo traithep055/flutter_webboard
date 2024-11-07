@@ -68,6 +68,7 @@ class UserDashboard extends StatelessWidget {
               ),
               onPressed: () {
                 // นำทางไปยังหน้าข้อมูลส่วนตัว
+                Get.toNamed('/profile');
               },
             ),
             const SizedBox(height: 15),

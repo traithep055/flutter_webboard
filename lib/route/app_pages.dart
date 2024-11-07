@@ -4,7 +4,7 @@ import '../controllers/comment_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart'; // Import the AuthController
 import '../controllers/topic_controller.dart';
-import '../models/profile_controller.dart';
+import '../controllers/profile_controller.dart';
 import '../views/admin/category/addcategory_page.dart';
 import '../views/admin/category/category_page.dart';
 import '../views/admin/category/editcategory_page.dart';
@@ -54,7 +54,7 @@ class AppPages {
       }),
     ),
     GetPage(
-      name: '/adminprofile',
+      name: '/profile',
       page: () => ProfilePage(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => ProfileController());

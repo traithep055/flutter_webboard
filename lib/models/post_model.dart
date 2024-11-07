@@ -6,7 +6,7 @@ class PostModel {
   final String authorName;
   final String categoryName;
   final String createdAt;
-  final List<Map<String, String>> comments;
+  final List<Map<String, dynamic>> comments;  // เปลี่ยนเป็น List<Map<String, dynamic>>
 
   PostModel({
     required this.id,
@@ -16,7 +16,7 @@ class PostModel {
     required this.authorName,
     required this.categoryName,
     required this.createdAt,
-    List<Map<String, String>>? comments,
+    List<Map<String, dynamic>>? comments,  // เปลี่ยนเป็น List<Map<String, dynamic>>
   }) : comments = comments ?? [];
 
   factory PostModel.fromJson(Map<String, dynamic> json) {
@@ -24,14 +24,16 @@ class PostModel {
       id: json['id'],
       title: json['title'],
       content: json['content'],
-      imageUrl: 'http://192.168.11.221:8080${json['photoUrl']}',
+      imageUrl: json['photoUrl'] != null
+          ? 'http://192.168.11.221:8080${json['photoUrl']}'
+          : '', // Use an empty string if no photoUrl is provided
       authorName: json['author']['username'],
       categoryName: json['category']['name'],
       createdAt: json['createdAt'],
       comments: (json['comments'] as List).map((comment) {
         return {
-          'author': comment['author']?.toString() ?? 'Anonymous',
-          'content': comment['content']?.toString() ?? ''
+          'author': comment['author']['username'] ?? 'Anonymous', // Use username from comment['author']
+          'content': comment['content'] ?? ''
         };
       }).toList(),
     );

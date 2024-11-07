@@ -3,11 +3,12 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
+import '../controllers/comment_controller.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.find<HomeController>();
-  final AuthController authController = Get.find<AuthController>(); // Use AuthController
-  final int contentLimit = 200; // Maximum content length to display
+  final AuthController authController = Get.find<AuthController>();
+  final int contentLimit = 200;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,6 @@ class HomeView extends StatelessWidget {
         title: const Text('หน้าแรก'),
         backgroundColor: const Color.fromARGB(255, 217, 217, 217),
         actions: [
-          // If the user is not logged in, show the "Sign In" button
           Obx(() {
             if (authController.isLoggedIn.value) {
               return Row(
@@ -26,27 +26,25 @@ class HomeView extends StatelessWidget {
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {
-                        Get.toNamed('/admindashboard'); // Go to admin dashboard
+                        Get.toNamed('/admindashboard');
                       },
                     ),
                   if (authController.userRole.value == 'USER')
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {
-                        Get.toNamed('/userdashboard'); // Go to user dashboard
+                        Get.toNamed('/userdashboard');
                       },
                     ),
-                  // Show the "Logout" button if the user is logged in
                   IconButton(
                     icon: const Icon(Icons.logout),
                     onPressed: () {
-                      authController.logout(); // Log out the user
+                      authController.logout();
                     },
                   ),
                 ],
               );
             } else {
-              // Show the "Sign In" button if the user is not logged in
               return TextButton(
                 onPressed: () {
                   Get.toNamed('/login');
@@ -71,7 +69,6 @@ class HomeView extends StatelessWidget {
                   value: "หมวดหมู่",
                   child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black)),
                 ),
-                // Add more categories here
               ],
               onChanged: (value) {},
               hint: const Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.white)),
@@ -107,6 +104,8 @@ class ExpandablePostCard extends StatefulWidget {
 class _ExpandablePostCardState extends State<ExpandablePostCard> {
   bool _isExpanded = false;
   final TextEditingController _commentController = TextEditingController();
+  final CommentController commentController = Get.find<CommentController>();
+  final AuthController authController = Get.find<AuthController>();
 
   void _showCommentsDialog(BuildContext context) {
     showDialog(
@@ -126,8 +125,8 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
                     final comment = widget.post.comments[index];
                     return ListTile(
                       leading: Icon(Icons.person),
-                      title: Text(comment['author']),
-                      subtitle: Text(comment['content']),
+                      title: Text(comment['author'] ?? 'Anonymous'), // ใช้ 'author' จากคอมเมนต์
+                      subtitle: Text(comment['content'] ?? ''), // ใช้ 'content' จากคอมเมนต์
                     );
                   },
                 ),
@@ -144,11 +143,17 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_commentController.text.isNotEmpty) {
+                  // ใช้ userId จาก AuthController
+                  await commentController.addComment(
+                    _commentController.text,
+                    authController.currentUserId.value, // ใช้ currentUserId
+                    widget.post.id, // ใช้ postId จากโพสต์
+                  );
                   setState(() {
                     widget.post.comments.add({
-                      'author': 'ผู้ใช้', // Replace with actual user
+                      'author': authController.isLoggedIn.value ? 'คุณ' : 'ผู้ใช้', // ใช้ชื่อผู้ใช้จริงถ้ามี
                       'content': _commentController.text,
                     });
                   });

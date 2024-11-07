@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../controllers/auth_controller.dart';
+import '../../controllers/home_controller.dart';
 
 class UserDashboard extends StatelessWidget {
   final AuthController authController = Get.find<AuthController>();
@@ -12,7 +13,12 @@ class UserDashboard extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.home),
           onPressed: () {
-            Navigator.pushNamed(context, '/home'); // ไปยังหน้า /home เมื่อกดไอคอน home
+            Get.offNamed('/home', arguments: {
+              // สามารถส่ง arguments ได้หากต้องการ
+            });
+            // เรียกใช้ controller ที่จำเป็นเมื่อกลับไปหน้า home
+            final homeController = Get.find<HomeController>();
+            homeController.fetchPosts();
           },
         ),
         title: const Text(

@@ -1,5 +1,9 @@
+import 'dart:io'; // Import this package
+
+// Your existing imports
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
 
 import '../../../controllers/topic_controller.dart';
 import '../../../controllers/auth_controller.dart';
@@ -11,6 +15,7 @@ class AddTopicPage extends StatelessWidget {
     final TextEditingController titleController = TextEditingController();
     final TextEditingController contentController = TextEditingController();
     String? selectedCategory;
+    PlatformFile? selectedFile;
 
     final topicController = Get.find<TopicController>();
     final authController = Get.find<AuthController>();
@@ -57,8 +62,8 @@ class AddTopicPage extends StatelessWidget {
                             ] +
                               topicController.categories.map((category) {
                                 return DropdownMenuItem<String>(
-                                  value: category['id'],  // ใช้ 'id' เป็นค่า
-                                  child: Text(category['name']!),  // แสดงชื่อของหมวดหมู่
+                                  value: category['id'],
+                                  child: Text(category['name']!),
                                 );
                               }).toList(),
                       onChanged: (value) {
@@ -100,13 +105,19 @@ class AddTopicPage extends StatelessWidget {
                       Expanded(
                         child: TextField(
                           readOnly: true,
+                          controller: TextEditingController(
+                            text: selectedFile != null ? selectedFile!.name : 'เลือกไฟล์',
+                          ),
                           decoration: const InputDecoration(
                             hintText: 'เลือกไฟล์',
                             filled: true,
                             fillColor: Color.fromARGB(255, 235, 235, 235),
                           ),
-                          onTap: () {
-                            // ส่วนนี้ใช้เลือกไฟล์ ถ้าจำเป็น
+                          onTap: () async {
+                            FilePickerResult? result = await FilePicker.platform.pickFiles();
+                            if (result != null) {
+                              selectedFile = result.files.first;
+                            }
                           },
                         ),
                       ),
@@ -135,6 +146,7 @@ class AddTopicPage extends StatelessWidget {
                             newTopic.content,
                             newTopic.authorId,
                             newTopic.categoryId,
+                            selectedFile != null ? File(selectedFile!.path!) : null, // Convert PlatformFile to File
                           );
 
                           Navigator.pop(context);

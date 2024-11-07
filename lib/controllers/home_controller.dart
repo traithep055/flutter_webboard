@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import '../models/post_model.dart';
 
 class HomeController extends GetxController {
@@ -10,36 +12,18 @@ class HomeController extends GetxController {
     fetchPosts();
   }
 
-  void fetchPosts() {
-    posts.value = [
-      PostModel(
-        title: 'แนะนำหนังพจญภัย',
-        author: 'Josh',
-        date: '04/11/67',
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s,',
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi_fbx2Kyr6F0F5gOlyIG1FXJb-ZEDod5Kzw&s',
-      ),
-      PostModel(
-        title: 'ประโยชน์ของการเรียน',
-        author: 'John',
-        date: '05/11/67',
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry...',
-        imageUrl: '',
-      ),
-      PostModel(
-        title: 'flutter คือะไร',
-        author: 'gojo',
-        date: '06/11/67',
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry kjkjfdjfoekfskdfskdfksjfksdfjvmdkmvldfmdmfkdsmkdmfksdmfkdsmkdsmfkdsmfkdsmfkdsmfkdmfkmfdkfmkdsfmfdmdsfkdmdkmmdvdfdfdfdfdfdfdfdfdefgmkmkgrgkrkfjferfklkfkerjfklerjrefklerjfklerjfirejfierjfijerifjerifjerijferijfefjerfierfioerjfrejfjerjfioerjfierjfierjfierjfioerjfioerjfioerjfierjkenv',
-        imageUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSi_fbx2Kyr6F0F5gOlyIG1FXJb-ZEDod5Kzw&s',
-      ),
-      PostModel(
-        title: 'อยากนอน',
-        author: 'ฺบอส',
-        date: '06/11/67',
-        content: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry นอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอนอน',
-        imageUrl: '',
-      ),
-    ];
+  Future<void> fetchPosts() async {
+    try {
+      final response = await http.get(Uri.parse('http://192.168.11.221:3001/post/posts'));
+      if (response.statusCode == 200) {
+        List data = json.decode(response.body);
+        print(data);  // เพิ่มการพิมพ์ข้อมูลที่ได้รับจาก API
+        posts.value = data.map((json) => PostModel.fromJson(json)).toList();
+      } else {
+        print('Failed to load posts');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
   }
 }

@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import '../controllers/auth_controller.dart';
 import '../controllers/home_controller.dart';
 
 class HomeView extends StatelessWidget {
   final HomeController controller = Get.find<HomeController>();
-  final AuthController authController = Get.find<AuthController>();  // ใช้ AuthController
+  final AuthController authController = Get.find<AuthController>(); // Use AuthController
   final int contentLimit = 200; // Maximum content length to display
 
   @override
@@ -21,19 +22,18 @@ class HomeView extends StatelessWidget {
             if (authController.isLoggedIn.value) {
               return Row(
                 children: [
-                  // Show the user icon if the user is logged in
-                  if (authController.userRole.value == 'ADMIN') 
+                  if (authController.userRole.value == 'ADMIN')
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {
-                        Get.toNamed('/admindashboard');  // Go to admin dashboard
+                        Get.toNamed('/admindashboard'); // Go to admin dashboard
                       },
                     ),
-                    if (authController.userRole.value == 'USER') 
+                  if (authController.userRole.value == 'USER')
                     IconButton(
                       icon: const Icon(Icons.person),
                       onPressed: () {
-                        Get.toNamed('/userdashboard');  // Go to user dashboard
+                        Get.toNamed('/userdashboard'); // Go to user dashboard
                       },
                     ),
                   // Show the "Logout" button if the user is logged in
@@ -67,7 +67,10 @@ class HomeView extends StatelessWidget {
             alignment: Alignment.centerRight,
             child: DropdownButton<String>(
               items: const [
-                DropdownMenuItem(value: "หมวดหมู่", child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black))),
+                DropdownMenuItem(
+                  value: "หมวดหมู่",
+                  child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black)),
+                ),
                 // Add more categories here
               ],
               onChanged: (value) {},
@@ -91,7 +94,6 @@ class HomeView extends StatelessWidget {
   }
 }
 
-
 class ExpandablePostCard extends StatefulWidget {
   final dynamic post;
   final int contentLimit;
@@ -103,8 +105,8 @@ class ExpandablePostCard extends StatefulWidget {
 }
 
 class _ExpandablePostCardState extends State<ExpandablePostCard> {
-  bool _isExpanded = false; // Controls the expanded state of the post content
-  final TextEditingController _commentController = TextEditingController(); // Controller for the comment input
+  bool _isExpanded = false;
+  final TextEditingController _commentController = TextEditingController();
 
   void _showCommentsDialog(BuildContext context) {
     showDialog(
@@ -117,7 +119,6 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                // List of comments
                 ListView.builder(
                   shrinkWrap: true,
                   itemCount: widget.post.comments.length,
@@ -131,7 +132,6 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
                   },
                 ),
                 const SizedBox(height: 10),
-                // Input field for new comment
                 TextField(
                   controller: _commentController,
                   decoration: InputDecoration(
@@ -145,17 +145,15 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
           actions: [
             TextButton(
               onPressed: () {
-                // Handle adding a comment here
                 if (_commentController.text.isNotEmpty) {
-                  // Assuming your post has a method to add a comment
-                  widget.post.comments.add({
-                    'author': 'ผู้ใช้', // Replace with the actual user
-                    'content': _commentController.text,
+                  setState(() {
+                    widget.post.comments.add({
+                      'author': 'ผู้ใช้', // Replace with actual user
+                      'content': _commentController.text,
+                    });
                   });
-
-                  // Clear the text field
                   _commentController.clear();
-                  setState(() {}); // Update the UI to reflect the new comment
+                  Navigator.pop(context);
                 }
               },
               child: const Text("เพิ่มความคิดเห็น"),
@@ -183,7 +181,7 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('ชื่อกระทู้: ${post.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text('ผู้เขียน: ${post.author} โพสต์เมื่อ: ${post.date}'),
+            Text('ผู้เขียน: ${post.authorName} โพสต์เมื่อ: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(post.createdAt))}'),
             const SizedBox(height: 5),
             Text(
               _isExpanded
@@ -193,7 +191,7 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
             if (post.imageUrl.isNotEmpty)
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
-                child: Center( // Center the image
+                child: Center(
                   child: Image.network(post.imageUrl),
                 ),
               ),

@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 import '../../controllers/profile_controller.dart';
 
 
-class ProfilePage extends StatelessWidget {
+class UserProfilePage extends StatelessWidget {
   final ProfileController _controller = Get.put(ProfileController());
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController emailController = TextEditingController();

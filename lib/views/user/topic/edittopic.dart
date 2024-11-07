@@ -1,5 +1,7 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:file_picker/file_picker.dart';
 import '../../../controllers/topic_controller.dart';
 import '../../../controllers/auth_controller.dart';
 
@@ -18,6 +20,7 @@ class _EditTopicPageState extends State<EditTopicPage> {
   late TopicController topicController;
   late AuthController authController;
   late String topicId;
+  File? selectedFile;
 
   @override
   void initState() {
@@ -25,12 +28,20 @@ class _EditTopicPageState extends State<EditTopicPage> {
     topicController = Get.find<TopicController>();
     authController = Get.find<AuthController>();
 
-    // รับข้อมูลจากหน้า TopicPage
     final arguments = Get.arguments as Map<String, dynamic>;
     topicId = arguments['topicId'];
     titleController.text = arguments['title'];
     contentController.text = arguments['content'];
     selectedCategory = arguments['categoryId'];
+  }
+
+  Future<void> _pickFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles();
+    if (result != null && result.files.single.path != null) {
+      setState(() {
+        selectedFile = File(result.files.single.path!);
+      });
+    }
   }
 
   @override
@@ -118,16 +129,20 @@ class _EditTopicPageState extends State<EditTopicPage> {
                       const SizedBox(width: 10),
                       Expanded(
                         child: TextField(
+                          controller: TextEditingController(
+                            text: selectedFile?.path.split('/').last ?? 'เลือกไฟล์',
+                          ),
                           readOnly: true,
                           decoration: const InputDecoration(
-                            hintText: 'เลือกไฟล์',
                             filled: true,
                             fillColor: Color.fromARGB(255, 235, 235, 235),
                           ),
-                          onTap: () {
-                            // ใช้ส่วนนี้ในการเลือกไฟล์ถ้าจำเป็น
-                          },
+                          onTap: _pickFile,
                         ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.attach_file),
+                        onPressed: _pickFile,
                       ),
                     ],
                   ),
@@ -147,6 +162,7 @@ class _EditTopicPageState extends State<EditTopicPage> {
                             titleController.text,
                             contentController.text,
                             selectedCategory!,
+                            selectedFile,
                           );
 
                           Navigator.pop(context);

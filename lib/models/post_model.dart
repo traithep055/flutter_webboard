@@ -1,18 +1,39 @@
-// ที่ไหนสักแห่งในโปรเจคของคุณ
 class PostModel {
+  final String id;
   final String title;
-  final String author;
-  final String date;
   final String content;
   final String imageUrl;
-  List<Map<String, String>> comments; // ฟิลด์สำหรับความคิดเห็น
+  final String authorName;
+  final String categoryName;
+  final String createdAt;
+  final List<Map<String, String>> comments;
 
   PostModel({
+    required this.id,
     required this.title,
-    required this.author,
-    required this.date,
     required this.content,
     required this.imageUrl,
-    List<Map<String, String>>? comments, // รับค่าเริ่มต้น
-  }) : comments = comments ?? []; // ถ้าไม่มีค่าจะใช้เป็นรายการว่าง
+    required this.authorName,
+    required this.categoryName,
+    required this.createdAt,
+    List<Map<String, String>>? comments,
+  }) : comments = comments ?? [];
+
+  factory PostModel.fromJson(Map<String, dynamic> json) {
+    return PostModel(
+      id: json['id'],
+      title: json['title'],
+      content: json['content'],
+      imageUrl: 'http://192.168.11.221:8080${json['photoUrl']}',
+      authorName: json['author']['username'],
+      categoryName: json['category']['name'],
+      createdAt: json['createdAt'],
+      comments: (json['comments'] as List).map((comment) {
+        return {
+          'author': comment['author']?.toString() ?? 'Anonymous',
+          'content': comment['content']?.toString() ?? ''
+        };
+      }).toList(),
+    );
+  }
 }

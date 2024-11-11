@@ -176,7 +176,7 @@ class _ExpandablePostCardState extends State<ExpandablePostCard> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text('ชื่อกระทู้: ${post.title}', style: const TextStyle(fontWeight: FontWeight.bold)),
-            Text('ผู้เขียน: ${post.authorName} โพสต์เมื่อ: ${DateFormat('yyyy-MM-dd').format(DateTime.parse(post.createdAt))}'),
+            Text('ผู้เขียน: ${post.authorName} โพสต์เมื่อ: ${DateFormat('dd-MM-yyyy').format(DateTime.parse(post.createdAt))}'),
             const SizedBox(height: 5),
             Text(
               _isExpanded

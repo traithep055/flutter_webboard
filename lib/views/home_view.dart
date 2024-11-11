@@ -63,22 +63,16 @@ class HomeView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             alignment: Alignment.centerRight,
-            child: Obx(() {
-              return DropdownButton<String>(
-                value: controller.selectedCategory.value,
-                items: controller.categories.map((category) {
-                  return DropdownMenuItem(
-                    value: category,
-                    child: Text(category, style: const TextStyle(color: Colors.black)),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  controller.selectedCategory.value = value!;
-                  controller.fetchPosts(category: value); // กรองโพสต์ตามหมวดหมู่
-                },
-                hint: const Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.white)),
-              );
-            }),
+            child: DropdownButton<String>(
+              items: const [
+                DropdownMenuItem(
+                  value: "หมวดหมู่",
+                  child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black)),
+                ),
+              ],
+              onChanged: (value) {},
+              hint: const Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.white)),
+            ),
           ),
           Expanded(
             child: Obx(

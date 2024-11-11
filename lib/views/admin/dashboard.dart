@@ -50,6 +50,14 @@ class AdminDashboardView extends StatelessWidget {
                 },
               ),
               DashboardButton(
+                color: Colors.orange[300]!,
+                icon: Icons.block,
+                label: 'ระงับการใช้บัญชี',
+                onTap: () {
+                  Get.toNamed('/ban_user');
+                },
+              ),
+              DashboardButton(
                 color: Colors.red,
                 icon: Icons.logout,
                 label: 'Logout',

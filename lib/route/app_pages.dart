@@ -1,10 +1,12 @@
 import 'package:get/get.dart';
+import '../controllers/ban_controller.dart';
 import '../controllers/category_controller.dart';
 import '../controllers/comment_controller.dart';
 import '../controllers/home_controller.dart';
 import '../controllers/auth_controller.dart'; // Import the AuthController
 import '../controllers/topic_controller.dart';
 import '../controllers/profile_controller.dart';
+import '../views/admin/banuser/ban_user_page.dart';
 import '../views/admin/category/addcategory_page.dart';
 import '../views/admin/category/category_page.dart';
 import '../views/admin/category/editcategory_page.dart';
@@ -97,6 +99,13 @@ class AppPages {
       page: () => EditTopicPage(),
       binding: BindingsBuilder(() {
         Get.lazyPut(() => TopicController());
+      }),
+    ),
+    GetPage(
+      name: '/ban_user',
+      page: () => BanUserPage(),
+      binding: BindingsBuilder(() {
+        Get.lazyPut(() => BanController());
       }),
     ),
   ];

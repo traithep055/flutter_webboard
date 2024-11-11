@@ -63,16 +63,6 @@ class HomeView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(10),
             alignment: Alignment.centerRight,
-            child: DropdownButton<String>(
-              items: const [
-                DropdownMenuItem(
-                  value: "หมวดหมู่",
-                  child: Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.black)),
-                ),
-              ],
-              onChanged: (value) {},
-              hint: const Text("เลือกหมวดหมู่", style: TextStyle(color: Colors.white)),
-            ),
           ),
           Expanded(
             child: Obx(

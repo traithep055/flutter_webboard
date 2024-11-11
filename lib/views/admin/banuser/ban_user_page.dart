@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../controllers/ban_controller.dart';
 
 class BanUserPage extends StatelessWidget {
@@ -38,7 +37,7 @@ class BanUserPage extends StatelessWidget {
                     color: (user['isBanned'] as bool) ? Colors.red : Colors.green,
                   ),
                   onPressed: () {
-                    userController.toggleBan(user['id'] as int);
+                    userController.toggleBan(user['id'] as String, user['email'] as String);
                   },
                 ),
                 subtitle: Text(
